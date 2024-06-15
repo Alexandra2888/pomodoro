@@ -7,20 +7,18 @@ import { SoundsContext } from '@/contexts/timer-context';
 import { Label } from './ui/label';
 import { Input } from './ui/input';
 
-import { TimeOptionTypes } from '../types/index';
-
+import { SoundsContextTypes, StyleContextTypes, TimeOptionTypes, TimerContextTypes } from '../types/index';
 
 export default function TimeInputs() {
-  const { font } = useContext(StyleContext);
-  const { timerDuration, setTimerDuration } = useContext(TimerContext);
-  const { playSwitchOnSfx } = useContext(SoundsContext);
+  const { font } = useContext<StyleContextTypes>(StyleContext);
+  const { timerDuration, setTimerDuration } = useContext<TimerContextTypes>(TimerContext);
+  const { playSwitchOnSfx } = useContext<SoundsContextTypes>(SoundsContext);
 
   const handleTimerDurationChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
+    const result = parseInt(value, 10) || 0;
 
-    const result: number = +value.replace(/\D/g, '');
-
-    setTimerDuration((prevState: TimeOptionTypes) => ({
+    setTimerDuration((prevState:any) => ({
       ...prevState,
       [name]: result,
     }));
@@ -28,39 +26,38 @@ export default function TimeInputs() {
     playSwitchOnSfx();
   };
 
-  const timeOptions: TimeOptionTypes[] = [
+  const timeOptions = [
     {
       name: 'pomodoro',
       valueName: 'pomodoro',
-      value: timerDuration.pomodoro,
+      value: timerDuration.pomodoro as number,
     },
     {
       name: 'short break',
       valueName: 'shortBreak',
-      value: timerDuration.shortBreak,
+      value: timerDuration.shortBreak as number,
     },
     {
       name: 'long break',
       valueName: 'longBreak',
-      value: timerDuration.longBreak,
+      value: timerDuration.longBreak as number,
     },
   ];
 
   const inputsDisplay = timeOptions.map(({ name, valueName, value }) => (
     <Label
-      key={value}
-      htmlFor='timer-duration'
-      className={` relative flex items-center justify-between text-secondary md:flex-col md:items-start md:gap-2 ${font}`}
+      key={valueName}
+      htmlFor={`timer-duration-${valueName}`}
+      className={`relative flex items-center justify-between text-secondary md:flex-col md:items-start md:gap-2 ${font}`}
     >
       {name}
-
       <Input
         type='number'
         name={valueName}
         pattern='[0-9]*'
-        id='timer-duration'
+        id={`timer-duration-${valueName}`}
         value={value}
-        onChange={(e) => handleTimerDurationChange(e)}
+        onChange={handleTimerDurationChange}
         className='relative w-36 appearance-none rounded-lg bg-secondary-dark text-primary p-2 focus:outline-dashed focus:outline-primary-dark'
       />
     </Label>
