@@ -1,8 +1,8 @@
 "use client";
 
 import { createContext, useMemo, useState } from 'react';
+ // @ts-ignore
 import useSound from 'use-sound';
-
 // Types
 import { SoundsContextTypes } from '../types/index';
 
